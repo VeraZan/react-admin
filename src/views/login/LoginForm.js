@@ -1,73 +1,48 @@
 import React from "react";
 //antd
-import { Form, Input, Button, Row, Col,message } from 'antd';
+import { Form, Input, Button, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined, KeyOutlined } from '@ant-design/icons';
+//加密
+import CryptoJs from "crypto-js";
 //utils
-import { validate_password,validate_email } from "../../utils/validate";
+import { reg_password,validate_email } from "../../utils/validate";
 //api
-import { Login,GetCode } from "../../api/account";
+import { Login } from "../../api/account";
+//组件
+import Code from "../../components/code/index";
 
 class LoginForm extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       username:"",
-      code_button_text:"获取验证码",
       code_button_disabled:true,
-      code_button_loading:false,
-
+      module:"login",
+      loading:false,
     };
   }
 
   onFinish = (values) => {
-    Login(values).then(response => {
-
-    })
-  }
-
-  getCode = () => {
-    this.setState({
-      code_button_text:"发送中",
-      code_button_loading:true
-    })
+    const { username,password,code } = values;
     const requestData = {
-      username:this.state.username,
-      module:"login"
+      username,
+      password:CryptoJs.MD5(password).toString(),
+      code
     }
-    GetCode(requestData).then(response => {
+    this.setState({
+      loading:true
+    })
+    Login(requestData).then(response => {
+      this.setState({
+        loading:false
+      })
       const data = response.data;
       message.success(data.message);
-      this.countDown();
     }).catch(error => {
       this.setState({
-        code_button_text:"重新获取",
-        code_button_loading:false
+        loading:false
       })
     })
-  }
-
-  countDown = () => {
-    let timer = null;
-    let sec = 60;
-    this.setState({
-      code_button_loading:false,
-      code_button_disabled:true,
-      code_button_text:`${sec}s`
-    })
-    timer = setInterval(() => {
-      sec--;
-      if(sec <= 0){
-        this.setState({
-          code_button_disabled:false,
-          code_button_text:"重新获取"
-        })
-        clearInterval(timer);
-        return false;
-      }
-      this.setState({
-        code_button_text:`${sec}s`
-      })
-    },1000)
   }
 
   inputChange = (e) => {
@@ -81,7 +56,7 @@ class LoginForm extends React.Component {
   }
 
   render(){
-    const { username,code_button_text,code_button_disabled,code_button_loading } = this.state;
+    const { username,module,code_button_disabled,loading } = this.state;
     const _this = this;
     return (
       <React.Fragment>
@@ -128,7 +103,7 @@ class LoginForm extends React.Component {
                 {required: true,message: "密码不能为空!"},
                 // {min:6,message:"密码不能小于6位！"},
                 // {max:20,message:"密码不能大于20位！"},
-                {pattern: validate_password,message:"密码为6-20位的数字+字母！"}
+                {pattern: reg_password,message:"密码为6-20位的数字+字母！"}
               ]}
             >
               <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder="密码" />
@@ -145,19 +120,12 @@ class LoginForm extends React.Component {
                   <Input prefix={<KeyOutlined className="site-form-item-icon" />} placeholder="验证码" />
                 </Col>
                 <Col span={9}>
-                  <Button 
-                    type="danger" 
-                    className="get-code-button" 
-                    onClick={this.getCode} 
-                    disabled={code_button_disabled} 
-                    loading={code_button_loading} 
-                    block 
-                  >{code_button_text}</Button>
+                  <Code username={username} module={module} code_button_disabled={code_button_disabled} />
                 </Col>
               </Row>
             </Form.Item>         
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button" block>登录</Button>
+              <Button type="primary" htmlType="submit" className="login-form-button" loading={loading} block>登录</Button>
             </Form.Item>
           </Form>
         </div>

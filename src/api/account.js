@@ -13,6 +13,18 @@ export function Login(data){
 }
 
 /**
+ * 注册
+ * @param {*} data 
+ */
+export function Register(data){
+  return service.request({
+    method:"post",
+    url:"/register/",
+    data
+  })
+}
+
+/**
  * 获取验证码
  * @param {*} data 
  */
