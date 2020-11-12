@@ -5,7 +5,7 @@ import { UserOutlined, LockOutlined, KeyOutlined } from '@ant-design/icons';
 //加密
 import CryptoJs from "crypto-js";
 //utils
-import { validate_password,validate_email } from "../../utils/validate";
+import { validate_password } from "../../utils/validate";
 //api
 import { Register } from "../../api/account";
 //组件
@@ -16,11 +16,12 @@ class RegisterForm extends React.Component {
     super(props);
     this.state = {
       username:"",
-      code_button_disabled:true,
       module:"register",
       loading:false,
     };
   }
+
+  form = React.createRef();
 
   inputChange = (e) => {
     this.setState({
@@ -44,6 +45,7 @@ class RegisterForm extends React.Component {
       })
       const data = response.data;
       message.success(data.message);
+      this.form.current.resetFields();
       this.toggleForm();
     }).catch(error => {
       this.setState({
@@ -57,8 +59,7 @@ class RegisterForm extends React.Component {
   }
 
   render(){
-    const { username,module,code_button_disabled,loading } = this.state;
-    const _this = this;
+    const { username,module,loading } = this.state;
     return (
       <React.Fragment>
         <div className="form-header">
@@ -67,6 +68,7 @@ class RegisterForm extends React.Component {
         </div>
         <div className="form-content">
           <Form
+            ref={this.form} 
             name="normal_login"
             className="login-form"
             initialValues={{
@@ -78,21 +80,7 @@ class RegisterForm extends React.Component {
               name="username" 
               rules={[
                 {required: true,message: "邮箱不能为空!"},
-                () => ({
-                  validator(rule,value) {
-                    if(validate_email(value)) {
-                      _this.setState({
-                        code_button_disabled:false
-                      })
-                      return Promise.resolve();
-                    }else{
-                      _this.setState({
-                        code_button_disabled:true
-                      })
-                      return Promise.reject("邮箱格式有误!");
-                    }                  
-                  }
-                })
+                {type:"email",message: '邮箱格式有误!'}
               ]}
             >               
               <Input value={username} onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="邮箱" />
@@ -145,7 +133,7 @@ class RegisterForm extends React.Component {
                   <Input prefix={<KeyOutlined className="site-form-item-icon" />} placeholder="验证码" />
                 </Col>
                 <Col span={9}>
-                  <Code username={username} module={module} code_button_disabled={code_button_disabled} />
+                  <Code username={username} module={module} />
                 </Col>
               </Row>
             </Form.Item>         

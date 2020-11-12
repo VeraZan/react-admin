@@ -1,0 +1,39 @@
+.logo{
+  float: left;
+  width:250px;
+  height:75px;
+  margin-left: -50px;
+  // display: flex; 
+  // align-items: center;
+  // justify-content: center;
+  background-color: #001529;
+  @include webkit(transition,all 0.2s ease 0s);
+  span{
+    display: block;
+    width:177px;
+    height:47px;
+    margin: 14px auto;
+    background-color: #1a2d3f;
+  }
+}
+
+.header-wrap{
+  margin-left:220px;
+  @include webkit(transition,all 0.2s ease 0s);
+}
+.collapsed-icon{
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.collapsed-close {
+  .logo{
+    width:80px;
+    span{
+      width:80%;
+    }
+  }
+  .header-wrap{
+    margin-left:50px;
+  }
+}

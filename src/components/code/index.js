@@ -1,6 +1,8 @@
 import React from "react";
 //antd
 import { Button,message } from "antd";
+//utils
+import { validate_email } from "../../utils/validate";
 //api
 import { GetCode } from "../../api/account";
 //定时器
@@ -13,33 +15,35 @@ class Code extends React.Component {
       username:props.username,
       module:props.module,
       code_button_text:"获取验证码",
-      code_button_disabled:props.code_button_disabled,
+      code_button_disabled:true,
       code_button_loading:false
     }
   }
 
   // 监听父组件传来的props值的变化
   // 方式一：componentWillReceiveProps（新版react已废弃）
-  componentWillReceiveProps(value){
-    if(!value.code_button_disabled){
-      clearInterval(timer);
-      this.setState({
-        code_button_text:"获取验证码"
-      })
+  componentWillReceiveProps({ username }){
+    let btn_disabled = true;
+    if(username !== "" && validate_email(username)){
+      btn_disabled = false;
     }
     this.setState({
-      username:value.username,
-      code_button_disabled:value.code_button_disabled
+      username,
+      code_button_disabled:btn_disabled
     })
   }
   // 方式二：getDerivedStateFromProps,有bug
   // static getDerivedStateFromProps(nextProps, prevState) {
+  //   const { username } = nextProps;
   //   // 当传入的props中的指定值发生变化的时候，更新state
-  //   if (nextProps.username !== prevState.username || 
-  //     nextProps.code_button_disabled !== prevState.code_button_disabled) {
+  //   if (username !== prevState.username) {
+  //     let btn_disabled = true;
+  //     if(username !== "" && validate_email(username)){
+  //       btn_disabled = false;
+  //     }
   //     return {
-  //       username: nextProps.username,
-  //       code_button_disabled: nextProps.code_button_disabled
+  //       username,
+  //       code_button_disabled:btn_disabled
   //     };
   //   }   
   //   // 否则，对于state不进行任何操作

@@ -1,26 +1,31 @@
 import React from "react";
+//router
+import { withRouter } from "react-router-dom";
 //antd
 import { Form, Input, Button, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined, KeyOutlined } from '@ant-design/icons';
 //加密
 import CryptoJs from "crypto-js";
 //utils
-import { reg_password,validate_email } from "../../utils/validate";
+import { reg_password } from "../../utils/validate";
 //api
 import { Login } from "../../api/account";
 //组件
 import Code from "../../components/code/index";
+//session
+import { setToken } from "../../utils/session";
 
 class LoginForm extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       username:"",
-      code_button_disabled:true,
       module:"login",
       loading:false,
     };
   }
+
+  form = React.createRef();
 
   onFinish = (values) => {
     const { username,password,code } = values;
@@ -38,6 +43,9 @@ class LoginForm extends React.Component {
       })
       const data = response.data;
       message.success(data.message);
+      this.form.current.resetFields();
+      setToken(data.data.token);
+      this.props.history.push("/index");
     }).catch(error => {
       this.setState({
         loading:false
@@ -56,8 +64,7 @@ class LoginForm extends React.Component {
   }
 
   render(){
-    const { username,module,code_button_disabled,loading } = this.state;
-    const _this = this;
+    const { username,module,loading } = this.state;
     return (
       <React.Fragment>
         <div className="form-header">
@@ -66,6 +73,7 @@ class LoginForm extends React.Component {
         </div>
         <div className="form-content">
           <Form
+            ref={this.form} 
             name="normal_login"
             className="login-form"
             initialValues={{
@@ -77,22 +85,7 @@ class LoginForm extends React.Component {
               name="username" 
               rules={[
                 {required: true,message: "邮箱不能为空!"},
-                //{type:"email",message: '邮箱格式有误!'},
-                () => ({
-                  validator(rule,value) {
-                    if(validate_email(value)) {
-                      _this.setState({
-                        code_button_disabled:false
-                      })
-                      return Promise.resolve();
-                    }else{
-                      _this.setState({
-                        code_button_disabled:true
-                      })
-                      return Promise.reject("邮箱格式有误!");
-                    }                  
-                  }
-                })
+                {type:"email",message: '邮箱格式有误!'},
               ]}
             >               
               <Input value={username} onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="邮箱" />
@@ -120,7 +113,7 @@ class LoginForm extends React.Component {
                   <Input prefix={<KeyOutlined className="site-form-item-icon" />} placeholder="验证码" />
                 </Col>
                 <Col span={9}>
-                  <Code username={username} module={module} code_button_disabled={code_button_disabled} />
+                  <Code username={username} module={module} />
                 </Col>
               </Row>
             </Form.Item>         
@@ -134,4 +127,4 @@ class LoginForm extends React.Component {
   }
 }
 
-export default LoginForm;
+export default withRouter(LoginForm);
