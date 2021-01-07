@@ -13,7 +13,7 @@ import { Login } from "../../api/account";
 //组件
 import Code from "../../components/code/index";
 //session
-import { setToken } from "../../utils/session";
+import { setToken, setUsername } from "../../utils/cookies";
 
 class LoginForm extends React.Component {
   constructor(props){
@@ -45,6 +45,7 @@ class LoginForm extends React.Component {
       message.success(data.message);
       this.form.current.resetFields();
       setToken(data.data.token);
+      setUsername(data.data.username);
       this.props.history.push("/index");
     }).catch(error => {
       this.setState({

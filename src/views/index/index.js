@@ -2,7 +2,8 @@ import React from "react";
 //css
 import "./index.scss";
 //antd
-import { Layout } from 'antd';
+import { ConfigProvider, Layout } from 'antd';
+import zhCN from 'antd/lib/locale/zh_CN';
 //组件
 import LayoutAside from "./components/aside";
 import LayoutHeader from "./components/header";
@@ -16,7 +17,8 @@ class Index extends React.Component {
   constructor(){
     super();
     this.state = {
-      collapsed:false
+      collapsed:false,
+      locale: zhCN
     };
   }
 
@@ -33,17 +35,19 @@ class Index extends React.Component {
 
   render(){
     return (
-      <Layout className="layout-wrap">
-        <Header className="layout-header">
-          <LayoutHeader collapsed={this.state.collapsed} toggle={this.toggleCollapsed} />
-        </Header>
-        <Layout>
-          <Sider width="250px" collapsed={this.state.collapsed}><LayoutAside /></Sider>
-          <Content className="layout-main">
-            <ContainerMain />
-          </Content>
+      <ConfigProvider locale={this.state.locale}>
+        <Layout className="layout-wrap">
+          <Header className="layout-header">
+            <LayoutHeader collapsed={this.state.collapsed} toggle={this.toggleCollapsed} />
+          </Header>
+          <Layout>
+            <Sider width="250px" collapsed={this.state.collapsed}><LayoutAside /></Sider>
+            <Content className="layout-main">
+              <ContainerMain />
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
+      </ConfigProvider>
     )
   }
 }

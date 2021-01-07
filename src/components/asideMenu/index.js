@@ -100,7 +100,7 @@ class AsideMenu extends Component {
         key={key} 
         icon={icon && icon !== "" ? React.createElement(Icon[icon]) : ""}
       >
-        <Link to={key}>{title}</Link>
+        <Link to={key} replace>{title}</Link>
       </Menu.Item>
     )
   }
