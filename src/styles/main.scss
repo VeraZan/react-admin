@@ -1,5 +1,6 @@
 @import "./normalize.scss";
 @import "./sassConfig.scss";
+@import "./antd.scss";
 
 body{
   background-color: #001529 !important;
@@ -11,17 +12,16 @@ body{
   }
 }
 
-.ant-form-item {
-  button + button {
-    margin-left: 8px;
-  }
-}
-
 .table-wrap {
   position: relative;
-  padding-top: 30px;
+  padding-top: 20px;
+  .ant-pagination {
+    float: right;
+  }
   .batch-delete-btn {
-    position: absolute;
-    bottom: 12px;
+    margin-top: 20px;
+  }
+  .ant-pagination {
+    margin-top: 20px;
   }
 }

@@ -1,45 +1,45 @@
 const router = [
   {
-    title: '控制台',
+    title: 'menu_dashboard',
     icon: 'DashboardOutlined',
     key: '/index'
   },
   {
-    title: '用户管理',
+    title: 'menu_user',
     icon: 'UserOutlined',
     key: '/index/user',
     children: [
-      {key: '/index/user/index', title: '用户列表', icon: '',},
-      {key: '/index/user/add', title: '添加用户',icon: ''}
+      {key: '/index/user/index', title: 'menu_userIndex', icon: '',},
+      {key: '/index/user/add', title: 'menu_userAdd',icon: ''}
     ]
   },
   {
-    title: '部门管理',
+    title: 'menu_department',
     icon: 'BankOutlined',
     key: '/index/department',
     children: [
-      {key: '/index/department/index', title: '部门列表', icon: ''},
-      {key: '/index/department/add', title: '添加部门', icon: ''},
+      {key: '/index/department/index', title: 'menu_departmentIndex', icon: ''},
+      {key: '/index/department/add', title: 'menu_departmentAdd', icon: ''},
     ]
   },
   {
-    title: '职位管理',
+    title: 'menu_entry',
     icon: 'TeamOutlined',
     key: '/index/entry',
     children: [
-      {key: '/index/entry/form/basic-form', title: '职位列表'},
-      {key: '/index/entry/form/step-form', title: '添加职位'}
+      {key: '/index/entry/form/basic-form', title: 'menu_entryIndex'},
+      {key: '/index/entry/form/step-form', title: 'menu_entryAdd'}
     ]
   },
   {
-    title: '请假',
+    title: 'menu_leave',
     icon: 'SolutionOutlined',
-    key: '/index/about'
+    key: '/index/leave'
   },
   {
-    title: '加班',
+    title: 'menu_overtime',
     icon: 'ScheduleOutlined',
-    key: '/index/abouta'
+    key: '/index/overtime'
   }
 ]
 export default router;

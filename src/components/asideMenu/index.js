@@ -6,9 +6,12 @@ import  * as Icon from '@ant-design/icons';
 import { Link,withRouter } from "react-router-dom";
 //路由
 import Router from "../../router/index";
+//i18n
+import { withTranslation } from 'react-i18next';
 
 const { SubMenu } = Menu;
 
+@withTranslation(['menu'])
 class AsideMenu extends Component {
   constructor(props) {
     super(props);
@@ -83,7 +86,7 @@ class AsideMenu extends Component {
       <SubMenu 
         key={key} 
         icon={icon && icon !== "" ? React.createElement(Icon[icon]) : ""} 
-        title={title}
+        title={this.props.t(title)}
       >
         {
           children && children.map(item => {
@@ -100,7 +103,7 @@ class AsideMenu extends Component {
         key={key} 
         icon={icon && icon !== "" ? React.createElement(Icon[icon]) : ""}
       >
-        <Link to={key} replace>{title}</Link>
+        <Link to={key} replace>{this.props.t(title)}</Link>
       </Menu.Item>
     )
   }

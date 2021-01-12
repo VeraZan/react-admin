@@ -5,12 +5,15 @@ import { UserOutlined, LockOutlined, KeyOutlined } from '@ant-design/icons';
 //加密
 import CryptoJs from "crypto-js";
 //utils
-import { validate_password } from "../../utils/validate";
+import { validate_password } from "@/utils/validate";
 //api
-import { Register } from "../../api/account";
+import { Register } from "@/api/account";
 //组件
-import Code from "../../components/code/index";
+import Code from "@/components/code/index";
+//i18n
+import { withTranslation } from 'react-i18next';
 
+@withTranslation(['common'])
 class RegisterForm extends React.Component {
   constructor(props){
     super(props);
@@ -60,11 +63,12 @@ class RegisterForm extends React.Component {
 
   render(){
     const { username,module,loading } = this.state;
+    const { t } = this.props
     return (
       <React.Fragment>
         <div className="form-header">
-          <h4 className="column">注册</h4>
-          <span onClick={this.toggleForm}>账号登录</span>
+          <h4 className="column">{t('register')}</h4>
+          <span onClick={this.toggleForm}>{t('account_login')}</span>
         </div>
         <div className="form-content">
           <Form
@@ -79,21 +83,21 @@ class RegisterForm extends React.Component {
             <Form.Item 
               name="username" 
               rules={[
-                {required: true,message: "邮箱不能为空!"},
-                {type:"email",message: '邮箱格式有误!'}
+                {required: true,message: t('required_email')},
+                {type:"email",message: t('pattern_email')}
               ]}
             >               
-              <Input value={username} onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="邮箱" />
+              <Input value={username} onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder={t('email')} />
             </Form.Item>
             <Form.Item 
               name="password" 
               rules={[
-                {required: true,message: "密码不能为空!"},
+                {required: true,message: t('required_password')},
                 ({ getFieldValue }) => ({
                   validator(rule,value){
                     const passwords_value = getFieldValue("passwords");
                     if(!validate_password(value)){
-                      return Promise.reject("密码为6-20位的数字+字母！");
+                      return Promise.reject(t('pattern_password'));
                     }
                     if(passwords_value && value !== passwords_value){
                       return Promise.reject("两次输入密码不一致！");
@@ -103,34 +107,34 @@ class RegisterForm extends React.Component {
                 })
               ]}
             >
-              <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder="密码" />
+              <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder={t('password')} />
             </Form.Item>  
             <Form.Item 
               name="passwords" 
               rules={[
-                {required: true,message: "确认密码不能为空!"},
+                {required: true,message: t('required_passwords')},
                 ({ getFieldValue }) => ({
                   validator(rule,value){
                     if(value !== getFieldValue("password")){
-                      return Promise.reject("两次输入密码不一致！");
+                      return Promise.reject(t('different_passwords'));
                     }
                     return Promise.resolve();
                   }
                 })
               ]}
             >
-              <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder="确认密码" />
+              <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder={t('passwords')} />
             </Form.Item>     
             <Form.Item 
               name="code" 
               rules={[
-                {required: true,message: "验证码不能为空!"},
-                {len:6,message:"请输入长度为6位的验证码！"}
+                {required: true,message: t('required_code')},
+                {len:6,message:t('len_code')}
               ]}
             >
               <Row gutter={13}>
                 <Col span={15}>
-                  <Input prefix={<KeyOutlined className="site-form-item-icon" />} placeholder="验证码" />
+                  <Input prefix={<KeyOutlined className="site-form-item-icon" />} placeholder={t('code')} />
                 </Col>
                 <Col span={9}>
                   <Code username={username} module={module} />
@@ -138,7 +142,7 @@ class RegisterForm extends React.Component {
               </Row>
             </Form.Item>         
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button" loading={loading} block>注册</Button>
+              <Button type="primary" htmlType="submit" className="login-form-button" loading={loading} block>{t('register')}</Button>
             </Form.Item>
           </Form>
         </div>

@@ -7,15 +7,21 @@ import { UserOutlined, LockOutlined, KeyOutlined } from '@ant-design/icons';
 //加密
 import CryptoJs from "crypto-js";
 //utils
-import { reg_password } from "../../utils/validate";
+import { reg_password } from "@/utils/validate";
 //api
-import { Login } from "../../api/account";
+import { Login } from "@/api/account";
 //组件
-import Code from "../../components/code/index";
+import Code from "@/components/code/index";
 //session
-import { setToken, setUsername } from "../../utils/cookies";
+import { setToken, setUsername } from "@/utils/cookies";
+//i18n
+import { withTranslation } from 'react-i18next';
 
+// 除了第一个引用的命名空间，其余的使用时需要加上 命名空间：譬如{t('menu:aaa')}
+// 如果t函数指定命名空间就使用指定命名空间下的语言，如果没有指定使用第一个命名空间的语言
+@withTranslation(['common'])
 class LoginForm extends React.Component {
+
   constructor(props){
     super(props);
     this.state = {
@@ -66,11 +72,12 @@ class LoginForm extends React.Component {
 
   render(){
     const { username,module,loading } = this.state;
+    const { t }  = this.props;
     return (
       <React.Fragment>
         <div className="form-header">
-          <h4 className="column">登录</h4>
-          <span onClick={this.toggleForm}>账号注册</span>
+          <h4 className="column">{t('login')}</h4>
+          <span onClick={this.toggleForm}>{t('account_register')}</span>
         </div>
         <div className="form-content">
           <Form
@@ -85,33 +92,33 @@ class LoginForm extends React.Component {
             <Form.Item 
               name="username" 
               rules={[
-                {required: true,message: "邮箱不能为空!"},
-                {type:"email",message: '邮箱格式有误!'},
+                {required: true,message: t('required_email')},
+                {type:"email",message: t('pattern_email')},
               ]}
             >               
-              <Input value={username} onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="邮箱" />
+              <Input value={username} onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder={t('email')} />
             </Form.Item>
             <Form.Item 
               name="password" 
               rules={[
-                {required: true,message: "密码不能为空!"},
+                {required: true,message: t('required_password')},
                 // {min:6,message:"密码不能小于6位！"},
                 // {max:20,message:"密码不能大于20位！"},
-                {pattern: reg_password,message:"密码为6-20位的数字+字母！"}
+                {pattern: reg_password,message: t('pattern_password')}
               ]}
             >
-              <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder="密码" />
+              <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder={t('password')} />
             </Form.Item>    
             <Form.Item 
               name="code" 
               rules={[
-                {required: true,message: "验证码不能为空!"},
-                {len:6,message:"请输入长度为6位的验证码！"}
+                {required: true,message: t('required_code')},
+                {len:6,message: t('len_code')}
               ]}
             >
               <Row gutter={13}>
                 <Col span={15}>
-                  <Input prefix={<KeyOutlined className="site-form-item-icon" />} placeholder="验证码" />
+                  <Input prefix={<KeyOutlined className="site-form-item-icon" />} placeholder={t('code')} />
                 </Col>
                 <Col span={9}>
                   <Code username={username} module={module} />
@@ -119,7 +126,7 @@ class LoginForm extends React.Component {
               </Row>
             </Form.Item>         
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button" loading={loading} block>登录</Button>
+              <Button type="primary" htmlType="submit" className="login-form-button" loading={loading} block>{t('login')}</Button>
             </Form.Item>
           </Form>
         </div>
